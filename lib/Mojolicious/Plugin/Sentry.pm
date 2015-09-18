@@ -28,7 +28,7 @@ sub register {
 			$plugin->sentry->capture_message(
 				$data->message,
 				$plugin->sentry->request_context(
-					$req->url->to_string,
+					$req->url->to_abs->to_string,
 					method => $req->method,
 					data   => $req->params->to_hash,
 					headers => { map {$_ => ~~$req->headers->header($_)} @{$req->headers->names} },
