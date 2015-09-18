@@ -25,6 +25,12 @@ subtest 'it includes the http request in the event' => sub {
     is   $http->{data}   => '',        'Context includes data';
 };
 
+subtest 'it includes a stacktrace in the event' => sub {
+    my ($msg, %context) = capture_exception();
+
+    ok my $stack = $context{'sentry.interfaces.Stacktrace'};
+};
+
 done_testing;
 
 sub capture_exception {
