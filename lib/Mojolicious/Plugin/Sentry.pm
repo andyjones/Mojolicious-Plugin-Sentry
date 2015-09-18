@@ -30,7 +30,7 @@ sub register {
 				$plugin->sentry->request_context(
 					$req->url->to_abs->to_string,
 					method => $req->method,
-					data   => $req->params->to_hash,
+					data   => $req->params->to_string,
 					headers => { map {$_ => ~~$req->headers->header($_)} @{$req->headers->names} },
 				),
 				$self->sentry->stacktrace_context([

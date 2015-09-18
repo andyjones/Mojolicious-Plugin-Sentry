@@ -11,7 +11,6 @@ plugin Sentry => { sentry_dsn => 'http://key:secret@somewhere.com:9000/foo/123' 
 get '/500'    => sub { die "raise hell" };
 # App over
 
-
 subtest "it captures the exception" => sub {
     my ($msg, %context) = capture_exception();
     like $msg => qr/raise hell/;
@@ -23,6 +22,7 @@ subtest 'it includes the http request in the event' => sub {
     ok my $http = $context{'sentry.interfaces.Http'};
     is   $http->{method} => 'GET',     'method';
     like $http->{url}    => qr/^http/, 'Sentry requires an absolute url';
+    is   $http->{data}   => '',        'Context includes data';
 };
 
 done_testing;
