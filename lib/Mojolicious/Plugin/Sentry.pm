@@ -2,14 +2,17 @@ package Mojolicious::Plugin::Sentry;
 
 use Mojo::Base 'Mojolicious::Plugin';
 use Sentry::Raven;
+use Cwd ();
 
 our $VERSION = 0.11;
 
+has qw/mojo_lib_dir/;
 has qw/sentry/;
 
 sub register {
 	my ($plugin, $app, $conf)  = @_;
 
+	$plugin->mojo_lib_dir( Cwd::abs_path($app->home->mojo_lib_dir) );
 	$plugin->sentry( Sentry::Raven->new(%$conf) );
 
 	$app->helper(sentry => sub {
@@ -53,6 +56,8 @@ sub _req_to_http_context {
 sub _exception_to_stacktrace_context {
 	my ($self, $exception) = @_;
 
+	my $mojo_lib_dir = $self->mojo_lib_dir;
+
 	# Build a list of frames ordered by most recent call first
 	my @frames = map {
 		{
@@ -61,6 +66,7 @@ sub _exception_to_stacktrace_context {
 			filename => $_->[1],
 			lineno   => $_->[2],
 			function => $_->[3],
+			in_app   => Cwd::abs_path($_->[1]) =~ m{^\Q$mojo_lib_dir\E/} ? 0 : 1,
 		},
 	} @{ $exception->frames };
 

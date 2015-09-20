@@ -50,6 +50,12 @@ subtest 'it includes a stacktrace in the event' => sub {
 		ok(!@invalid_frames)
 			or diag("Some frames are missing a function: ", explain(\@invalid_frames));
 	};
+
+	subtest 'it detects frames that are part of your app rather than the framework' => sub {
+		my @got_frames = grep { $_->{in_app} } @frames;
+		my @expected_frames = grep { $_->{filename} =~ m{/003_request_context.t$} } @frames;
+		is_deeply(\@got_frames, \@expected_frames);
+	};
 };
 
 done_testing;

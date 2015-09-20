@@ -11,5 +11,6 @@ WriteMakefile(
 		'Test::Simple'  => 0.88,
 		'Sentry::Raven' => 0,
 		'Mojolicious'   => 0,
+		'Cwd'           => 0,
 	},
 );
